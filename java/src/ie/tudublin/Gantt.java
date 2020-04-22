@@ -111,16 +111,23 @@ public class Gantt extends PApplet
 	public void mouseDragged()
 	{
 		println("Mouse dragged");
-		float x = map(mouseX, borderLeft, width - borderRight, 1, 30);
+		float x = map(mouseX, borderLeft, width - borderRight, 1, 30); // map the mouse x axis to a value between 1 and 30
 		
 		// if the start of the bar is selected then alter the start value of the bar
 		if(barSide == 0)
 		{
-			tasks.get(selected).setStart((int)x);
+			if(x >= 1 && x <= 30 && x < tasks.get(selected).getEnd())
+			{
+				tasks.get(selected).setStart(floor(x));
+			}
 		}
 		else if(barSide == 1) // if the end of the chart is selected then alter the end of the bar
 		{
-			tasks.get(selected).setEnd((int)x);
+			if(x >= 1 && x <= 30 && x > tasks.get(selected).getStart())
+			{
+				println(x);
+				tasks.get(selected).setEnd(ceil(x));
+			}
 		}
 	}
 
