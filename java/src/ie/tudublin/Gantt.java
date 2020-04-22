@@ -81,14 +81,47 @@ public class Gantt extends PApplet
 		}
 	}
 	
+	int selected; // hold the selected bar of the bar chart
+	int barSide = -1; // holds whether the start or end of the bar chart is selected. 0 is start, 1 is end, -1 is none
+
 	public void mousePressed()
-	{
-		println("Mouse pressed");	
+	{	
+		for(int i = 0; i < tasks.size(); i++)
+		{
+			float x = map(tasks.get(i).getStart(), 1, 30, borderLeft, width - borderRight);
+            float x1 = map(tasks.get(i).getEnd(), 1, 30, borderLeft, width - borderRight);
+            float y = map(i, 0, tasks.size(), borderY, height - borderY);
+			
+			// check if start of gantt chart is selected
+			if(mouseX >= x - 20 && mouseX <= x + 20 && mouseY >= y && mouseY <= y + rectHeight)
+			{
+				println("Mouse pressed start of bar chart");
+				selected = i;
+				barSide = 0;
+			} // check if end of gantt char is selected
+			else if(mouseX >= x1 - 20 && mouseX <= x1 + 20 && mouseY >= y && mouseY <= y + rectHeight)
+			{
+				println("Mouse pressed end of bar chart");
+				selected = i;
+				barSide = 1;
+			}
+		}
 	}
 
 	public void mouseDragged()
 	{
 		println("Mouse dragged");
+		float x = map(mouseX, borderLeft, width - borderRight, 1, 30);
+		
+		// if the start of the bar is selected then alter the start value of the bar
+		if(barSide == 0)
+		{
+			tasks.get(selected).setStart((int)x);
+		}
+		else if(barSide == 1) // if the end of the chart is selected then alter the end of the bar
+		{
+			tasks.get(selected).setEnd((int)x);
+		}
 	}
 
 	// setup method to load tasks from csv file and print them to console
