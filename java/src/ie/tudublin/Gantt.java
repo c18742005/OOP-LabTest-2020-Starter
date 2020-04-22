@@ -9,6 +9,12 @@ public class Gantt extends PApplet
 {	
 	ArrayList<Task> tasks = new ArrayList<Task>(); //array list to hold instances of the task class
 	
+	// variable to control the size of the border around the graph
+	float borderLeft = 1.5f * width;
+	float borderRight = 0.4f * width;
+	float borderY = 0.6f * height;
+	int rectHeight = 35; // height of each rectangle bar
+
 	public void settings()
 	{
 		size(800, 600);
@@ -36,6 +42,44 @@ public class Gantt extends PApplet
 			println(t);
 		}
 	}
+
+	public void displayTasks()
+	{
+		stroke(255);
+		textAlign(CENTER, CENTER);
+
+		// loop to draw the grid
+		for(int i = 1; i <= 30; i++)
+		{
+			float x = map(i, 1, 30, borderLeft, width - borderRight);
+			
+			line(x, borderRight, x, height - borderRight);
+			fill(255);
+			text(i, x, borderRight / 2);
+		}
+
+		// loop to draw the task names beside the grid
+		for(int i = 0; i < tasks.size(); i++)
+		{
+			float y = map(i, 0, tasks.size(), borderY, height - borderY);
+			text(tasks.get(i).getTask(), borderY, y + 15);
+		}
+
+		colorMode(HSB);
+
+		// loop to draw the bars of the chart
+		for(int i = 0; i < tasks.size(); i++)
+		{
+			float x = map(tasks.get(i).getStart(), 1, 30, borderLeft, width - borderRight);
+			float y = map(i, 0, tasks.size(), borderY, height - borderY);
+			float x1 = map(tasks.get(i).getEnd(), 1, 30, borderLeft, width - borderRight);
+			float colourDiff = 255 / tasks.size(); // changes the HSB colour of each bar
+			
+			noStroke();
+			fill(i * colourDiff, 255, 255);
+			rect(x, y, x1 - x, rectHeight);
+		}
+	}
 	
 	public void mousePressed()
 	{
@@ -57,5 +101,6 @@ public class Gantt extends PApplet
 	public void draw()
 	{			
 		background(0);
+		displayTasks();
 	}
 }
