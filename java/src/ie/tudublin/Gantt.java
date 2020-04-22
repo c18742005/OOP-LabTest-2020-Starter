@@ -7,13 +7,13 @@ import processing.data.Table;
 
 public class Gantt extends PApplet
 {	
-	ArrayList<Task> tasks = new ArrayList<Task>(); //array list to hold instances of the task class
+	ArrayList<Task> tasks = new ArrayList<Task>(); // ArrayList to hold instances of the task class
 	
-	// variable to control the size of the border around the graph
+	// variables to control the size of the borders around the graph
 	float borderLeft = 1.5f * width;
 	float borderRight = 0.4f * width;
 	float borderY = 0.6f * height;
-	int rectHeight = 35; // height of each rectangle bar
+	int rectHeight = 35; // height of each rectangular bar
 
 	public void settings()
 	{
@@ -36,19 +36,20 @@ public class Gantt extends PApplet
 	// method to print each task to the console
 	public void printTasks()
 	{
-		// lopp through each task and print to console
+		// loop through each task and print them to console
 		for(Task t : tasks)
 		{
 			println(t);
 		}
 	}
 
+	// method to draw the grid and gantt chart on the applet
 	public void displayTasks()
 	{
 		stroke(255);
 		textAlign(CENTER, CENTER);
 
-		// loop to draw the grid
+		// loop to draw the grid for the chart
 		for(int i = 1; i <= 30; i++)
 		{
 			float x = map(i, 1, 30, borderLeft, width - borderRight);
@@ -65,14 +66,14 @@ public class Gantt extends PApplet
 			text(tasks.get(i).getTask(), borderY, y + 15);
 		}
 
-		colorMode(HSB);
+		colorMode(HSB); // set colour mode to HSB mode
 
 		// loop to draw the bars of the chart
 		for(int i = 0; i < tasks.size(); i++)
 		{
-			float x = map(tasks.get(i).getStart(), 1, 30, borderLeft, width - borderRight);
+			float x = map(tasks.get(i).getStart(), 1, 30, borderLeft, width - borderRight); // maps the bars start value on the graph
 			float y = map(i, 0, tasks.size(), borderY, height - borderY);
-			float x1 = map(tasks.get(i).getEnd(), 1, 30, borderLeft, width - borderRight);
+			float x1 = map(tasks.get(i).getEnd(), 1, 30, borderLeft, width - borderRight); // maps the bars end value on the graph
 			float colourDiff = 255 / tasks.size(); // changes the HSB colour of each bar
 			
 			noStroke();
@@ -81,51 +82,56 @@ public class Gantt extends PApplet
 		}
 	}
 	
-	int selected; // hold the selected bar of the bar chart
-	int barSide = -1; // holds whether the start or end of the bar chart is selected. 0 is start, 1 is end, -1 is none
+	int selected; // holds the selected bar of the bar chart
+	int barSide = -1; // holds whether the start or end of the bar chart is selected. 0 is start, 1 is end
 
 	public void mousePressed()
 	{	
+		// loop through the tasks to check if a bar has been selected
 		for(int i = 0; i < tasks.size(); i++)
 		{
-			float x = map(tasks.get(i).getStart(), 1, 30, borderLeft, width - borderRight);
-            float x1 = map(tasks.get(i).getEnd(), 1, 30, borderLeft, width - borderRight);
-            float y = map(i, 0, tasks.size(), borderY, height - borderY);
+			float x = map(tasks.get(i).getStart(), 1, 30, borderLeft, width - borderRight); // map the start x value of a bar
+			float x1 = map(tasks.get(i).getEnd(), 1, 30, borderLeft, width - borderRight);	// map the end x value of a bar
+			float y = map(i, 0, tasks.size(), borderY, height - borderY);
 			
 			// check if start of gantt chart is selected
 			if(mouseX >= x - 20 && mouseX <= x + 20 && mouseY >= y && mouseY <= y + rectHeight)
 			{
-				println("Mouse pressed start of bar chart");
 				selected = i;
 				barSide = 0;
+				break;
 			} // check if end of gantt char is selected
 			else if(mouseX >= x1 - 20 && mouseX <= x1 + 20 && mouseY >= y && mouseY <= y + rectHeight)
 			{
-				println("Mouse pressed end of bar chart");
 				selected = i;
 				barSide = 1;
+				break;
+			}
+			else
+			{
+				selected = -1;
 			}
 		}
 	}
 
 	public void mouseDragged()
 	{
-		println("Mouse dragged");
 		float x = map(mouseX, borderLeft, width - borderRight, 1, 30); // map the mouse x axis to a value between 1 and 30
 		
 		// if the start of the bar is selected then alter the start value of the bar
-		if(barSide == 0)
+		if(barSide == 0 && selected != -1)
 		{
+			// check if the new value is between 1 and 30 and is smaller than the end value
 			if(x >= 1 && x <= 30 && x < tasks.get(selected).getEnd())
 			{
 				tasks.get(selected).setStart(floor(x));
 			}
 		}
-		else if(barSide == 1) // if the end of the chart is selected then alter the end of the bar
+		else if(barSide == 1 && selected != -1) // if the end of the chart is selected then alter the end of the bar
 		{
+			// check if the new value is between 1 and 30 and is greater than the start value
 			if(x >= 1 && x <= 30 && x > tasks.get(selected).getStart())
 			{
-				println(x);
 				tasks.get(selected).setEnd(ceil(x));
 			}
 		}
