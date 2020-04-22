@@ -47,10 +47,11 @@ public class Gantt extends PApplet
 		println("Mouse dragged");
 	}
 
-	
-	
+	// setup method to load tasks from csv file and print them to console
 	public void setup() 
 	{
+		loadTasks();
+		printTasks();
 	}
 	
 	public void draw()
