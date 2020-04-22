@@ -1,9 +1,12 @@
 package ie.tudublin;
 
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 
 public class Gantt extends PApplet
 {	
+	ArrayList<Task> tasks = new ArrayList<Task>(); //array list to hold instances of the task class
 	
 	public void settings()
 	{
